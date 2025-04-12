@@ -1,102 +1,103 @@
-<script src="https://cdn.lordicon.com/lordicon.js"></script>
-<script>
-  // Wait for Lordicon core to be available
-  window.lottie.loadAnimation && window.Element && (function() {
-    class Trash {
-      player;
-      element;
-      targetElement;
-      empty;
+import { Element, defineElement } from '@lordicon/element';
+import lottie from 'lottie-web';
 
-      constructor(player, element, targetElement) {
-        this.player = player;
-        this.element = element;
-        this.targetElement = targetElement;
-        this.empty = true;
+class Trash {
+  player;
+  element;
+  targetElement;
+  empty;
 
-        this.onClick = this.onClick.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-      }
+  constructor(player, element, targetElement) {
+    this.player = player;
+    this.element = element;
+    this.targetElement = targetElement;
 
-      onConnected() {
-        this.targetElement.addEventListener('click', this.onClick);
-        this.targetElement.addEventListener('mouseenter', this.onMouseEnter);
-        this.targetElement.addEventListener('mouseleave', this.onMouseLeave);
-      }
+    this.empty = true;
 
-      onDisconnected() {
-        this.targetElement.removeEventListener('click', this.onClick);
-        this.targetElement.removeEventListener('mouseenter', this.onMouseEnter);
-        this.targetElement.removeEventListener('mouseleave', this.onMouseLeave);
-      }
+    this.onClick = this.onClick.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+  }
 
-      onReady() {
-        this.player.state = 'in-trash-empty';
-        this.player.playFromBeginning();
-      }
+  onConnected() {
+    this.targetElement.addEventListener('click', this.onClick);
+    this.targetElement.addEventListener('mouseenter', this.onMouseEnter);
+    this.targetElement.addEventListener('mouseleave', this.onMouseLeave);
+  }
 
-      onClick() {
-        if (this.empty) {
-          this.player.state = 'morph-trash-full';
-          this.empty = false;
-        } else {
-          this.player.state = 'morph-trash-full-to-empty';
-          this.empty = true;
-        }
-        this.player.playFromBeginning();
-      }
+  onDisconnected() {
+    this.targetElement.removeEventListener('click', this.onClick);
+    this.targetElement.removeEventListener('mouseenter', this.onMouseEnter);
+    this.targetElement.removeEventListener('mouseleave', this.onMouseLeave);
+  }
 
-      onMouseEnter() {
-        this.player.state = this.empty ? 'hover-trash-empty' : 'hover-trash-full';
-        this.player.playFromBeginning();
-      }
+  onReady() {
+    this.player.state = 'in-trash-empty';
+    this.player.playFromBeginning();
+  }
 
-      onMouseLeave() {
-        // Optional: reset state or stop
-      }
-
-      trashIntro() {
-        this.player.state = 'in-trash-empty';
-        this.empty = true;
-        this.player.playFromBeginning();
-      }
-
-      trashFill() {
-        this.player.state = 'morph-trash-full';
-        this.empty = false;
-        this.player.playFromBeginning();
-      }
-
-      trashErase() {
-        this.player.state = 'morph-trash-full-to-empty';
-        this.empty = true;
-        this.player.playFromBeginning();
-      }
+  onClick() {
+    if (this.empty) {
+      this.player.state = 'morph-trash-full';
+      this.empty = false;
+    } else {
+      this.player.state = 'morph-trash-full-to-empty';
+      this.empty = true;
     }
 
-    Element.defineTrigger('trash', Trash);
-  })();
+    this.player.playFromBeginning();
+  }
 
-  // Optional: Manual button triggering
-  window.addEventListener('DOMContentLoaded', () => {
-    const icon = document.querySelector('lord-icon');
+  onMouseEnter() {
+    if (this.empty) {
+      this.player.state = 'hover-trash-empty';
+    } else {
+      this.player.state = 'hover-trash-full';
+    }
 
-    icon.addEventListener('ready', () => {
-      document.getElementById('trash-intro').addEventListener('click', (e) => {
-        e.preventDefault();
-        icon.triggerInstance.trashIntro();
-      });
+    this.player.playFromBeginning();
+  }
 
-      document.getElementById('trash-fill').addEventListener('click', (e) => {
-        e.preventDefault();
-        icon.triggerInstance.trashFill();
-      });
+  onMouseLeave() {}
 
-      document.getElementById('trash-erase').addEventListener('click', (e) => {
-        e.preventDefault();
-        icon.triggerInstance.trashErase();
-      });
-    });
+  trashIntro() {
+    this.player.state = 'in-trash-empty';
+    this.empty = true;
+    this.player.playFromBeginning();
+  }
+
+  trashFill() {
+    this.player.state = 'morph-trash-full';
+    this.empty = false;
+    this.player.playFromBeginning();
+  }
+
+  trashErase() {
+    this.player.state = 'morph-trash-full-to-empty';
+    this.empty = true;
+    this.player.playFromBeginning();
+  }
+}
+
+Element.defineTrigger('trash', Trash);
+
+defineElement(lottie.loadAnimation);
+
+// control animation manualy with trigger instance
+const element = document.querySelector('lord-icon');
+element.addEventListener('ready', () => {
+  document.getElementById('trash-intro').addEventListener('click', (e) => {
+    e.preventDefault();
+    element.triggerInstance.trashIntro();
   });
-</script>
+
+  document.getElementById('trash-fill').addEventListener('click', (e) => {
+    e.preventDefault();
+    element.triggerInstance.trashFill();
+  });
+
+  document.getElementById('trash-erase').addEventListener('click', (e) => {
+    e.preventDefault();
+    element.triggerInstance.trashErase();
+  });
+});
